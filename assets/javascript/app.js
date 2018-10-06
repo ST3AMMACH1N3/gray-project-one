@@ -51,3 +51,9 @@ $.ajax({
 
 
 //Create a function that uses the youtube iframe api
+function createIframe() {
+    var tag = $("<script>").attr("src", "https://www.youtube.com/iframe_api");
+    console.log($("script")[0])
+}
+
+createIframe();
