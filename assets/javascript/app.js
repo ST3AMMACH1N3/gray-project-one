@@ -12,6 +12,18 @@ $.ajax({
     $("#next-land-veh").text(snap.rocket.first_stage.cores[0].landing_vehicle)
 })
 
+////Countdown to next launch////
+////////////////////////////////
+//Convert current timestamp to unix time
+var currentTimeConverted = moment().format("X")
+console.log(currentTimeConverted)
+//Convert launch date/time into unix time
+//Calculate difference between launch and current unix time
+//Convert difference to format of number of days/hours/minutes/seconds remaining
+//Set interval to update coundown by one second
+//If today is launch day update page every 5 minutes
+////////////////////////////////
+
 //Create the variables for all of the pieces of the url we might want to change
 //channelId
 var channelId = "UCUuENVpVuzqpRsXWIDlpQTg"
