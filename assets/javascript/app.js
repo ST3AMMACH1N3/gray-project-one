@@ -27,17 +27,20 @@ $.ajax({
 $.ajax({
     url: "https://api.spacexdata.com/v2/launches/upcoming?pretty=true",
     method: "GET"
-}).then(foreach{
-    (function(snap){
+}).then(function(snap){
+    snap.forEach(function(element){
     $("#future-flight-num").text(snap.flight_number)
     $("#future-mission-name").text(snap.mission_name)
     $("#future-date").text(snap.launch_date_local)
-    $("#future-rocket-name").text(snap.rocket.rocket_name)
+    
     $("#future-block").text(snap.rocket.first_stage.cores[0].block)
     $("#future-site").text(snap.launch_site.site_name_long)
     $("#future-land-veh").text(snap.rocket.first_stage.cores[0].landing_vehicle)
-    })
-})
+  })
+ 
+    console.log(element);
+  });
+
 //Dynamically generate cards for future launches
 //Create the variables for all of the pieces of the url we might want to change
 //channelId
