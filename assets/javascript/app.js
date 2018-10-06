@@ -6,6 +6,7 @@ $.ajax({
     $("#next-flight-num").text(snap.flight_number)
     $("#next-mission-name").text(snap.mission_name)
     $("#next-date").text(snap.launch_date_local)
+    launchTime = snap.launch_date_unix
     $("#next-rocket-name").text(snap.rocket.rocket_name)
     $("#next-block").text(snap.rocket.first_stage.cores[0].block)
     $("#next-site").text(snap.launch_site.site_name_long)
@@ -16,9 +17,11 @@ $.ajax({
 ////////////////////////////////
 //Convert current timestamp to unix time
 var currentTimeConverted = moment().format("X")
-console.log(currentTimeConverted)
+console.log("current time in unix: " + currentTimeConverted)
 //Convert launch date/time into unix time
+var launchTime = ""
 //Calculate difference between launch and current unix time
+var timeRemaining = 
 //Convert difference to format of number of days/hours/minutes/seconds remaining
 //Set interval to update coundown by one second
 //If today is launch day update page every 5 minutes
