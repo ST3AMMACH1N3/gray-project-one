@@ -39,3 +39,14 @@ $.ajax({
     })
 })
 //Dynamically generate cards for future launches
+//Create the variables for all of the pieces of the url we might want to change
+//channelId
+//part
+//eventType
+//type
+
+//Ajax call to the youtube api
+//Check if there is a livestream currently live
+//If there is update the iframe
+
+//Create a function that uses the youtube iframe api
