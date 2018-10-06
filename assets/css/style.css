@@ -11,18 +11,25 @@ body {
     padding: 10px;
 }
 
-footer {
-    background:#000000;
+.main {
+    margin-bottom: 100px;
+}
+
+
+
+.footer {
+    background:#121212;
     color: #aaaaaa;
     position: fixed;
     bottom:0px;
     border-top:solid 1px #333333;
-    margin: 0 auto;
-    padding: 40px 0px 0px;
+    margin: 40 0px auto;
+    padding: 10px;
     z-index: 3;
-    font-size: 8px;
-    text-align:0px;
+    font-size: 12px;
+    text-align: center;
 }
+
 
 
 h1, h2, .card-title {
