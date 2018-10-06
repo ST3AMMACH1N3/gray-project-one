@@ -12,6 +12,7 @@ $.ajax({
     $("#next-land-veh").text(snap.rocket.first_stage.cores[0].landing_vehicle)
 })
 
+<<<<<<< HEAD
 //Countdown to next launch
 //Convert current timestamp to unix time
 //Convert launch date/time into unix time
@@ -21,3 +22,16 @@ var now = moment()
 
 console.log(now)
 
+=======
+//Create the variables for all of the pieces of the url we might want to change
+//channelId
+//part
+//eventType
+//type
+
+//Ajax call to the youtube api
+//Check if there is a livestream currently live
+//If there is update the iframe
+
+//Create a function that uses the youtube iframe api
+>>>>>>> master
