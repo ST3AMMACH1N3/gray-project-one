@@ -15,6 +15,8 @@ $.ajax({
 ////Countdown to next launch////
 ////////////////////////////////
 //Convert current timestamp to unix time
+var currentTimeConverted = moment().format("X")
+console.log(currentTimeConverted)
 //Convert launch date/time into unix time
 //Calculate difference between launch and current unix time
 //Convert difference to format of number of days/hours/minutes/seconds remaining
