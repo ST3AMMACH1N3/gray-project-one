@@ -11,3 +11,13 @@ $.ajax({
     $("#next-site").text(snap.launch_site.site_name_long)
     $("#next-land-veh").text(snap.rocket.first_stage.cores[0].landing_vehicle)
 })
+
+//Countdown to next launch
+//Convert current timestamp to unix time
+//Convert launch date/time into unix time
+//Calculate difference between unix time
+//Convert difference to format DD/MM
+var now = moment()
+
+console.log(now)
+
