@@ -26,12 +26,34 @@ console.log(currentTimeConverted)
 
 //Create the variables for all of the pieces of the url we might want to change
 //channelId
+var channelId = "UCUuENVpVuzqpRsXWIDlpQTg"
+//var channelId = "UCtI0Hodo5o5dUb67FeUjDeA"
 //part
+var part = "snippet"
 //eventType
+var eventType = "live"
 //type
+var type = "video"
 
 //Ajax call to the youtube api
-//Check if there is a livestream currently live
-//If there is update the iframe
+$.ajax({
+    url: `https://www.googleapis.com/youtube/v3/search?channelId=${channelId}&part=${part}&eventType=${eventType}&type=${type}&key=${config.youtubeAPI}`,
+    method: "GET"
+}).then(function(snap){
+    //Check if there is a livestream currently live
+    if (snap.items.length > 0) {
+        //If there is update the iframe
+        console.log("The stream is live!");
+    } else {
+        console.log("The stream is not live.")
+    }
+})
+
 
 //Create a function that uses the youtube iframe api
+function createIframe() {
+    var tag = $("<script>").attr("src", "https://www.youtube.com/iframe_api");
+    console.log($("script")[0])
+}
+
+createIframe();
