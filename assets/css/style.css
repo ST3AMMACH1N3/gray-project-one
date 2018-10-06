@@ -1,0 +1,65 @@
+body {
+    background: #333333;
+    color: #DDD;
+    font-family: 'Space Mono', monospace;
+}
+
+.jumbotron {
+    background: #121212;
+    color: #DDD;
+    margin: 0 auto;
+    padding: 10px;
+}
+
+footer {
+    background:#000000;
+    color: #aaaaaa;
+    position: fixed;
+    bottom:0px;
+    border-top:solid 1px #333333;
+    margin: 0 auto;
+    padding: 40px 0px 0px;
+    z-index: 3;
+    font-size: 8px;
+    text-align:0px;
+}
+
+
+h1, h2, .card-title {
+    font-family: 'Audiowide', cursive;
+    text-align: center;
+}
+
+h3, h4, h5, h6 {
+    text-align: center;
+}
+
+p {
+    font-family: 'Space Mono', monospace;
+}
+
+
+.gray {
+    color: #888888;
+}
+
+.launch-count {
+    font-size: 4em;
+    text-align: center;
+    font-family: 'Rationale', sans-serif;
+    color:#888888;
+
+}
+
+.launch-vid {
+   display: none;
+}
+.card {
+    background:#444444;
+    margin-top:10px;
+}
+.card-body {
+    background: #eeeeee;
+    font-family: 'Space Mono', monospace;
+    color: #222222;
+}
