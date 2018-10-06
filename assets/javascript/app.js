@@ -12,17 +12,16 @@ $.ajax({
     $("#next-land-veh").text(snap.rocket.first_stage.cores[0].landing_vehicle)
 })
 
-<<<<<<< HEAD
-//Countdown to next launch
+////Countdown to next launch////
+////////////////////////////////
 //Convert current timestamp to unix time
 //Convert launch date/time into unix time
-//Calculate difference between unix time
-//Convert difference to format DD/MM
-var now = moment()
+//Calculate difference between launch and current unix time
+//Convert difference to format of number of days/hours/minutes/seconds remaining
+//Set interval to update coundown by one second
+//If today is launch day update page every 5 minutes
+////////////////////////////////
 
-console.log(now)
-
-=======
 //Create the variables for all of the pieces of the url we might want to change
 //channelId
 //part
@@ -34,4 +33,3 @@ console.log(now)
 //If there is update the iframe
 
 //Create a function that uses the youtube iframe api
->>>>>>> master
