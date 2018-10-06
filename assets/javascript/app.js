@@ -11,3 +11,15 @@ $.ajax({
     $("#next-site").text(snap.launch_site.site_name_long)
     $("#next-land-veh").text(snap.rocket.first_stage.cores[0].landing_vehicle)
 })
+
+//Create the variables for all of the pieces of the url we might want to change
+//channelId
+//part
+//eventType
+//type
+
+//Ajax call to the youtube api
+//Check if there is a livestream currently live
+//If there is update the iframe
+
+//Create a function that uses the youtube iframe api
