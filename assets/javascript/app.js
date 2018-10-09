@@ -20,10 +20,14 @@ var currentTimeConverted = moment().format("X")
 console.log("current time in unix: " + currentTimeConverted)
 //Convert launch date/time into unix time
 var launchTime = ""
+console.log("next launch time: " + launchTime)
 //Calculate difference between launch and current unix time
-var timeRemaining = 
+var timeRemaining = launchTime - currentTimeConverted
+console.log(timeRemaining)
 //Convert difference to format of number of days/hours/minutes/seconds remaining
+var timeRemainingConverted
 //Set interval to update coundown by one second
+
 //If today is launch day update page every 5 minutes
 ////////////////////////////////
 
@@ -40,7 +44,7 @@ var type = "video"
 
 //Ajax call to the youtube api
 $.ajax({
-    url: `https://www.googleapis.com/youtube/v3/search?channelId=${channelId}&part=${part}&eventType=${eventType}&type=${type}&key=${config.youtubeAPI}`,
+    url: `https://www.googleapis.com/youtube/v3/search?channelId=${channelId}&part=${part}&eventType=${eventType}&type=${type}&key=${youtubeAPI}`,
     method: "GET"
 }).then(function(snap){
     //Check if there is a livestream currently live
