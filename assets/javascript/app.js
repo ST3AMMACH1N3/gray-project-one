@@ -32,15 +32,20 @@ var timeRemainingConverted
 ////////////////////////////////
 
 //Create the variables for all of the pieces of the url we might want to change
-//channelId
-var channelId = "UCUuENVpVuzqpRsXWIDlpQTg"
+//Spacex
 //var channelId = "UCtI0Hodo5o5dUb67FeUjDeA"
+//Nasa
+var channelId = "UCLA_DiR1FfKNvjuUpBHmylQ"
 //part
 var part = "snippet"
 //eventType
 var eventType = "live"
 //type
 var type = "video"
+//the video id of the live stream
+var videoId
+//where the player object is stored
+var player
 
 //Ajax call to the youtube api
 $.ajax({
@@ -50,7 +55,9 @@ $.ajax({
     //Check if there is a livestream currently live
     if (snap.items.length > 0) {
         //If there is update the iframe
-        console.log("The stream is live!");
+        console.log("The stream is live!")
+        videoId = snap.items[0].id.videoId
+        createIframe()
     } else {
         console.log("The stream is not live.")
     }
@@ -59,8 +66,41 @@ $.ajax({
 
 //Create a function that uses the youtube iframe api
 function createIframe() {
-    var tag = $("<script>").attr("src", "https://www.youtube.com/iframe_api");
-    console.log($("script")[0])
+    var tag = $("<script>").attr("src", "https://www.youtube.com/iframe_api")
+    $("script").first().before(tag)
+    
 }
 
-createIframe();
+function onYouTubeIframeAPIReady() {
+    player = new YT.Player('player', {
+      height: '390',
+      width: '640',
+      videoId: videoId,
+      events: {
+        'onReady': onPlayerReady,
+        'onStateChange': onPlayerStateChange
+      }
+    })
+  }
+  
+// 4. The API will call this function when the video player is ready.
+function onPlayerReady(event) {
+
+    event.target.playVideo()
+    $("#player").css("display", "block").css("width", "100%")
+    var height = $("#player").width() * 0.609
+    height = `${height}px`
+    $("#player").css("height", height)
+
+}
+
+// 5. The API calls this function when the player's state changes.
+//    The function indicates that when playing a video (state=1),
+//    the player should play for six seconds and then stop.
+//var done = false
+function onPlayerStateChange(event) {
+    // if (event.data == YT.PlayerState.PLAYING && !done) {
+    //     setTimeout(stopVideo, 6000)
+    //     done = true
+    // }
+}
