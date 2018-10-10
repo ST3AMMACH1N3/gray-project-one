@@ -2,34 +2,39 @@
 $.ajax({
     url: "https://api.spacexdata.com/v2/launches/next?pretty=true",
     method: "GET"
-}).then(function(snap){
+}).then(function (snap) {
     $("#next-flight-num").text(snap.flight_number)
     $("#next-mission-name").text(snap.mission_name)
     $("#next-date").text(snap.launch_date_local)
-    launchTime = snap.launch_date_unix
     $("#next-rocket-name").text(snap.rocket.rocket_name)
     $("#next-block").text(snap.rocket.first_stage.cores[0].block)
     $("#next-site").text(snap.launch_site.site_name_long)
     $("#next-land-veh").text(snap.rocket.first_stage.cores[0].landing_vehicle)
+    countdownClock(snap)
 })
 
 ////Countdown to next launch////
 ////////////////////////////////
-//Convert current timestamp to unix time
-var currentTimeConverted = moment().format("X")
-console.log("current time in unix: " + currentTimeConverted)
-//Convert launch date/time into unix time
-var launchTime = ""
-console.log("next launch time: " + launchTime)
-//Calculate difference between launch and current unix time
-var timeRemaining = launchTime - currentTimeConverted
-console.log(timeRemaining)
-//Convert difference to format of number of days/hours/minutes/seconds remaining
-var timeRemainingConverted
-//Set interval to update coundown by one second
+function countdownClock(snap) {
+    var launchTime = snap.launch_date_unix
+    //Convert current timestamp to unix time
+    var currentTimeConverted = moment().format("X")
+    console.log("current time in unix: " + currentTimeConverted)
+    //Convert launch date/time into unix time
+    console.log("next launch time: " + launchTime)
+    //Calculate difference between launch and current unix time
+    var timeRemaining = (launchTime - currentTimeConverted) * 1000
+    console.log(timeRemaining)
+    //Convert difference to format of number of days/hours/minutes/seconds remaining
+    //Set interval to update coundown by one second
+    setInterval(function () {
+        timeRemaining = moment.duration(timeRemaining - 1000)
+        $(".launch-count").text(timeRemaining.days() + ":" + timeRemaining.hours() + ":" + timeRemaining.minutes() + ":" + timeRemaining.seconds())
+    }, 1000)
+    //If today is launch day update page every 5 minutes
+    ////////////////////////////////
+}
 
-//If today is launch day update page every 5 minutes
-////////////////////////////////
 
 //Create the variables for all of the pieces of the url we might want to change
 //Spacex
@@ -51,7 +56,7 @@ var player
 $.ajax({
     url: `https://www.googleapis.com/youtube/v3/search?channelId=${channelId}&part=${part}&eventType=${eventType}&type=${type}&key=${youtubeAPI}`,
     method: "GET"
-}).then(function(snap){
+}).then(function (snap) {
     //Check if there is a livestream currently live
     if (snap.items.length > 0) {
         //If there is update the iframe
@@ -68,21 +73,21 @@ $.ajax({
 function createIframe() {
     var tag = $("<script>").attr("src", "https://www.youtube.com/iframe_api")
     $("script").first().before(tag)
-    
+
 }
 
 function onYouTubeIframeAPIReady() {
     player = new YT.Player('player', {
-      height: '390',
-      width: '640',
-      videoId: videoId,
-      events: {
-        'onReady': onPlayerReady,
-        'onStateChange': onPlayerStateChange
-      }
+        height: '390',
+        width: '640',
+        videoId: videoId,
+        events: {
+            'onReady': onPlayerReady,
+            'onStateChange': onPlayerStateChange
+        }
     })
-  }
-  
+}
+
 // 4. The API will call this function when the video player is ready.
 function onPlayerReady(event) {
 
