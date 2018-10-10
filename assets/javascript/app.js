@@ -13,25 +13,31 @@ $.ajax({
     countdownClock(snap)
 })
 
-////Countdown to next launch////
-////////////////////////////////
+//Countdown to next launch
 function countdownClock(snap) {
+
+    //Get launch time from API
     var launchTime = snap.launch_date_unix
-    //Convert current timestamp to unix time
+
+    //Convert current timestamp to unix time (milliseconds)
     var currentTimeConverted = moment().format("X")
-    console.log("current time in unix: " + currentTimeConverted)
-    //Convert launch date/time into unix time
-    console.log("next launch time: " + launchTime)
-    //Calculate difference between launch and current unix time
+
+    //Calculate difference between launch and current unix time (milliseconds)
     var timeRemaining = (launchTime - currentTimeConverted) * 1000
-    console.log(timeRemaining)
-    //Convert difference to format of number of days/hours/minutes/seconds remaining
+
     //Set interval to update coundown by one second
     setInterval(function () {
+
+        //Update time remaining by decreasing one second
         timeRemaining = moment.duration(timeRemaining - 1000)
-        moment(timeRemaining).format("DD:HH:mm:ss")
-        $(".launch-count").text(timeRemaining.days() + ":" + timeRemaining.hours() + ":" + timeRemaining.minutes() + ":" + timeRemaining.seconds())
+
+        //Convert difference to format of number of days/hours/minutes/seconds remaining
+        timeLeft = moment(timeRemaining._data).format("DD:HH:mm:ss")
+
+        //Display updated time left to launch to page
+        $(".launch-count").text(timeLeft)
     }, 1000)
+
     //If today is launch day update page every 5 minutes
     ////////////////////////////////
 }
