@@ -29,6 +29,7 @@ function countdownClock(snap) {
     //Set interval to update coundown by one second
     setInterval(function () {
         timeRemaining = moment.duration(timeRemaining - 1000)
+        moment(timeRemaining).format("DD:HH:mm:ss")
         $(".launch-count").text(timeRemaining.days() + ":" + timeRemaining.hours() + ":" + timeRemaining.minutes() + ":" + timeRemaining.seconds())
     }, 1000)
     //If today is launch day update page every 5 minutes
