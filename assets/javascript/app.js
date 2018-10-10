@@ -95,24 +95,21 @@ function onYouTubeIframeAPIReady() {
     })
 }
 
-// 4. The API will call this function when the video player is ready.
 function onPlayerReady(event) {
-
     event.target.playVideo()
-    $("#player").css("display", "block").css("width", "100%")
-    var height = $("#player").width() * 0.609
-    height = `${height}px`
-    $("#player").css("height", height)
-
+    $("#player").parent().parent().css("margin-left", "0").css("margin-right", "0")
+    $("#player").parent().css("position", "relative").css("padding-top", "25px").css("padding-bottom", "56.25%").css("height", "0")
+    $("#player").css("display", "flex").css("width", "100%").css("height", "100%").css("position", "absolute").css("top", "0").css("left", "0")
 }
 
-// 5. The API calls this function when the player's state changes.
-//    The function indicates that when playing a video (state=1),
-//    the player should play for six seconds and then stop.
-//var done = false
 function onPlayerStateChange(event) {
-    // if (event.data == YT.PlayerState.PLAYING && !done) {
-    //     setTimeout(stopVideo, 6000)
-    //     done = true
-    // }
+    logTheState(event.data)
+}
+
+function logTheState(state) {
+    for(var key in YT.PlayerState) {
+        if (YT.PlayerState[key] == state) {
+            console.log(key);
+        }
+    }
 }
