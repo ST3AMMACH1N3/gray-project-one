@@ -27,25 +27,34 @@ $.ajax({
 //AJAX Call
 var futureLaunchURL = "https://api.spacexdata.com/v2/launches/upcoming?pretty=true"
 $.ajax({
-    url: futureLaunchURL
+    url: futureLaunchURL,
     method: "GET"
 }).then(function(response){ 
-    console.log(futureLaunchURL);
-    console.log(response);
+    console.log("futureLaunchURL: " + futureLaunchURL);
+    
     //store data from the AJAX request in the results variable
-    var futureLaunches = response.data;
+    var futureLaunches = response;
+    console.log(futureLaunches)
+    console.log(futureLaunches[0].launch_site.site_name_long)
     for (var i = 0; i < futureLaunches.length; i++) {
-        //create and store a div tag
-        var futureLaunch = $("<div>");
+        //create and store a div tag in the future-launch-info div
+        $("#future-launch-info").append("<table><tr><td><strong>Mission Name:</strong></td><td>" + futureLaunches[i].mission_name + "</td></tr>"
+        + "<tr><td><strong>Launch Date:</strong></td><td>" + futureLaunches[i].launch_date_local + "</td></tr>"
+        + "<tr><td><strong>Launch Site:</strong></td><td>" + futureLaunches[i].launch_site.site_name_long + "</td></tr></table><p></p>")
+
+ 
+
+
+     /*   var futureLaunch = $("<div>");
         futureLaunch.attr("flight-num", futureLaunches[i].flight_number)
         futureLaunch.attr("mission-name", futureLaunches[i].mission_name)
         futureLaunch.attr("launch-date", futureLaunches[i].launch_date_local)
         futureLaunch.attr("launch-site", futureLaunches[i].launch_site.site_name_long)
-    //
+    console.log(futureLaunch["launch-site"])
     //$(".future-block").text(snap.rocket.first_stage.cores[0].block)
     //$(".future-site").text(snap.launch_site.site_name_long)
     //$(".future-land-veh").text(snap.rocket.first_stage.cores[0].landing_vehicle)
-$("#future-launch-info").append(this.results[0])
+//$("#future-launch-info").append(futureLaunches */
    }
   });
  
