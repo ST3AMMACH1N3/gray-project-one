@@ -41,13 +41,10 @@ $.ajax({
         futureLaunch.attr("mission-name", futureLaunches[i].mission_name)
         futureLaunch.attr("launch-date", futureLaunches[i].launch_date_local)
         futureLaunch.attr("launch-site", futureLaunches[i].launch_site.site_name_long)
-    //
-    //$(".future-block").text(snap.rocket.first_stage.cores[0].block)
-    //$(".future-site").text(snap.launch_site.site_name_long)
-    //$(".future-land-veh").text(snap.rocket.first_stage.cores[0].landing_vehicle)
-$("#future-launch-info").append(this.results[0])
-   }
-  });
+      
+        
+    }
+  })
  
 
 
