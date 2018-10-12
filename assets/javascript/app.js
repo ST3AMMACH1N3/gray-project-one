@@ -216,7 +216,6 @@ function createIframe() {
 }
 
 //Create a function that uses the youtube iframe api
-createIframe();
 function onYouTubeIframeAPIReady() {
     player = new YT.Player('player', {
         height: '390',
