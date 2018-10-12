@@ -13,7 +13,6 @@ $.ajax({
     countdownClock(snap)
 })
 
-<<<<<<< HEAD
 //COUNTDOWN TO NEXT LAUNCH
 //format date
 
@@ -78,12 +77,10 @@ console.log(currentTimeConverted)
 //Set interval to update coundown by one second
 //If today is launch day update page every 5 minutes
 ////////////////////////////////
-=======
 var timeRemaining
 var checkTimer
 var countDown
 
->>>>>>> 91258e61b0ad43057029822d7a0589d11b89858e
 //Countdown to next launch
 function countdownClock(snap) {
 
