@@ -13,10 +13,77 @@ $.ajax({
     countdownClock(snap)
 })
 
+<<<<<<< HEAD
+//COUNTDOWN TO NEXT LAUNCH
+//format date
+
+
+//FUTURE LAUNCHES
+//SpaceX API for Upcoming Launches
+
+//Set up variables for future launches
+
+//How many future launches do I want to show?
+
+//Create an array of future launches
+//Have a For Loop to cycle through future launches
+//AJAX Call
+var futureLaunchURL = "https://api.spacexdata.com/v2/launches/upcoming?pretty=true"
+$.ajax({
+    url: futureLaunchURL,
+    method: "GET"
+}).then(function(response){ 
+    console.log("futureLaunchURL: " + futureLaunchURL);
+    
+    //store data from the AJAX request in the results variable
+    var futureLaunches = response;
+    console.log(futureLaunches)
+    console.log(futureLaunches[0].launch_site.site_name_long)
+    for (var i = 0; i < futureLaunches.length; i++) {
+        //create and store a div tag in the future-launch-info div
+        $("#future-launch-info").append("<table><tr><td><strong>Mission Name:</strong></td><td>" + futureLaunches[i].mission_name + "</td></tr>"
+        + "<tr><td><strong>Launch Date:</strong></td><td>" + futureLaunches[i].launch_date_local + "</td></tr>"
+        + "<tr><td><strong>Launch Site:</strong></td><td>" + futureLaunches[i].launch_site.site_name_long + "</td></tr>" +
+        "<tr><td style='background-color:#333333; height: 10px; margin-left:-10px;'></td><td style='background-color:#333333; height: 10px; margin-right:-10px;'></td></tr></table>"
+        )
+
+ 
+
+     /*   var futureLaunch = $("<div>");
+        futureLaunch.attr("flight-num", futureLaunches[i].flight_number)
+        futureLaunch.attr("mission-name", futureLaunches[i].mission_name)
+        futureLaunch.attr("launch-date", futureLaunches[i].launch_date_local)
+        futureLaunch.attr("launch-site", futureLaunches[i].launch_site.site_name_long)
+    console.log(futureLaunch["launch-site"])
+    //$(".future-block").text(snap.rocket.first_stage.cores[0].block)
+    //$(".future-site").text(snap.launch_site.site_name_long)
+    //$(".future-land-veh").text(snap
+.rocket.first_stage.cores[0].landing_vehicle)
+//$("#future-launch-info").append(futureLaunches */
+   }
+  });
+ 
+
+
+
+//Dynamically generate cards for future launches
+////Countdown to next launch////
+////////////////////////////////
+//Convert current timestamp to unix time
+var currentTimeConverted = moment().format("X")
+console.log(currentTimeConverted)
+//Convert launch date/time into unix time
+//Calculate difference between launch and current unix time
+//Convert difference to format of number of days/hours/minutes/seconds remaining
+//Set interval to update coundown by one second
+//If today is launch day update page every 5 minutes
+////////////////////////////////
+=======
 var timeRemaining
 var checkTimer
 var countDown
 
+>>>>>>> 91258e61b0ad43057029822d7a0589d11b89858e
 //Countdown to next launch
 function countdownClock(snap) {
 
@@ -151,6 +218,8 @@ function createIframe() {
 
 }
 
+//Create a function that uses the youtube iframe api
+createIframe();
 function onYouTubeIframeAPIReady() {
     player = new YT.Player('player', {
         height: '390',
