@@ -38,8 +38,8 @@ function countdownClock(snap) {
         var data = timeRemaining._data
 
         //If there is no time left clear the interval
-        let shouldClear =  true;
-        for(var key in data) {
+        let shouldClear = true;
+        for (var key in data) {
             if (data[key] > 0) {
                 shouldClear = false;
                 break;
@@ -71,7 +71,7 @@ function countdownClock(snap) {
         $(".launch-count").text(timeLeft)
     }, 1000)
 
-    
+
     //If the launch is more than a day away check back in every day
     if (timeRemaining._data.days > 0) {
         checkTimer = setInterval(checkDaysRemaining, 1000 * 60 * 60 * 24) //Once a day
@@ -92,7 +92,7 @@ function checkDaysRemaining() {
         checkHoursRemaining()
         checkTimer = setInterval(checkHoursRemaining, 1000 * 60 * 60) //Once an hour
     }
-    
+
 }
 
 function checkHoursRemaining() {
@@ -175,7 +175,7 @@ function onPlayerStateChange(event) {
 }
 
 function logState(state) {
-    for(var key in YT.PlayerState) {
+    for (var key in YT.PlayerState) {
         if (YT.PlayerState[key] == state) {
             console.log(key);
         }
@@ -184,23 +184,59 @@ function logState(state) {
 
 ///////Mailer/////////////
 ///////////////////////
-/// API KEY - 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
+/// API KEY - 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
 
-var settings = {
-    "async": true,
-    "crossDomain": true,
-    "url": "https://api.sendgrid.com/v3/mail/send",
-    "method": "POST",
-    "headers": {
-      "Content-Type": "application/json",
-      "Authorization": "Bearer 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",
-      "Cache-Control": "no-cache",
-      "Postman-Token": "0b235ec2-b7c7-4690-9761-f90362296f83"
-    },
-    "processData": false,
-    "data": "{\n\t\"personalizations\": [\n\t{\n\t\t\"to\": [\n\t\t\t{\n\t\t\t\t\"email\": \"raiotech@gmail.com\",\n\t\t\t\t\"name\": \"David Hiller\"\n\t\t\t}\n\t\t],\n\t\t\"subject\": \"Test email\"\n\t\t}\n\t],\n\t\"from\": {\n\t\t\"email\": \"raiotech@gmail.com\",\n\t\t\"name\": \"David Hiller\"\n\t},\n\t\"content\": [\n\t\t{\n\t\t\t\"type\": \"text/plain\",\n\t\t\t\"value\": \"This is a test email\"\n\t\t}\n\t]\n}"
-  }
-  
-  $.ajax(settings).done(function (response) {
-    console.log(response);
-  });
+$("#submit").click( function (event) {
+    event.preventDefault()
+
+    
+    var name = $("#first-name").val().trim() + $("#last-name").val().trim()
+    var email = $("#email").val().trim()
+    var subscribers = {
+        personalizations: [
+            {
+                to: [
+                    {
+                        email: email,
+                        name: name
+                    }
+                ],
+                subject: "Thanks for subscribing!"
+            }
+        ],
+        from: {
+            email: "SpaceXLaunchPadHost@gmail.com",
+            name: "SpaceX Launch Pad"
+        },
+        content: [
+            {
+                type: "text/plain",
+                value: "Thank you for becoming one of our subscribers! You will receive an email notification the day before the next SpaceX launch to check out the live stream."
+            }
+        ]
+    }
+
+    var settings = {
+        "async": true,
+        "crossDomain": true,
+        "url": "https://api.sendgrid.com/v3/mail/send",
+        "method": "POST",
+        "headers": {
+            "Content-Type": "application/json",
+            "Authorization": "Bearer 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",
+            "Cache-Control": "no-cache",
+            "Postman-Token": "eb764eda-032e-4596-ade7-078d9630d176"
+        },
+        "processData": false,
+        "data": JSON.stringify(subscribers)
+    }
+
+    $("#first-name").val("")
+    $("#last-name").val("")
+    $("#email").val("")
+    $.ajax(settings).done(function (response) {
+        console.log(response);
+    });
+
+})
+
