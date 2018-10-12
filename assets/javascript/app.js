@@ -2,7 +2,7 @@
 $.ajax({
     url: "https://api.spacexdata.com/v2/launches/next?pretty=true",
     method: "GET"
-}).then(function(snap){
+}).then(function (snap) {
     $("#next-flight-num").text(snap.flight_number)
     $("#next-mission-name").text(snap.mission_name)
     $("#next-date").text(snap.launch_date_local)
@@ -10,9 +10,11 @@ $.ajax({
     $("#next-block").text(snap.rocket.first_stage.cores[0].block)
     $("#next-site").text(snap.launch_site.site_name_long)
     $("#next-land-veh").text(snap.rocket.first_stage.cores[0].landing_vehicle)
+    countdownClock(snap)
 })
 
 //COUNTDOWN TO NEXT LAUNCH
+//format date
 
 
 //FUTURE LAUNCHES
@@ -40,10 +42,11 @@ $.ajax({
         //create and store a div tag in the future-launch-info div
         $("#future-launch-info").append("<table><tr><td><strong>Mission Name:</strong></td><td>" + futureLaunches[i].mission_name + "</td></tr>"
         + "<tr><td><strong>Launch Date:</strong></td><td>" + futureLaunches[i].launch_date_local + "</td></tr>"
-        + "<tr><td><strong>Launch Site:</strong></td><td>" + futureLaunches[i].launch_site.site_name_long + "</td></tr></table><p></p>")
+        + "<tr><td><strong>Launch Site:</strong></td><td>" + futureLaunches[i].launch_site.site_name_long + "</td></tr>" +
+        "<tr><td style='background-color:#333333; height: 10px; margin-left:-10px;'></td><td style='background-color:#333333; height: 10px; margin-right:-10px;'></td></tr></table>"
+        )
 
  
-
 
      /*   var futureLaunch = $("<div>");
         futureLaunch.attr("flight-num", futureLaunches[i].flight_number)
@@ -53,7 +56,8 @@ $.ajax({
     console.log(futureLaunch["launch-site"])
     //$(".future-block").text(snap.rocket.first_stage.cores[0].block)
     //$(".future-site").text(snap.launch_site.site_name_long)
-    //$(".future-land-veh").text(snap.rocket.first_stage.cores[0].landing_vehicle)
+    //$(".future-land-veh").text(snap
+.rocket.first_stage.cores[0].landing_vehicle)
 //$("#future-launch-info").append(futureLaunches */
    }
   });
@@ -73,27 +77,63 @@ console.log(currentTimeConverted)
 //Set interval to update coundown by one second
 //If today is launch day update page every 5 minutes
 ////////////////////////////////
+//Countdown to next launch
+function countdownClock(snap) {
+
+    //Get launch time from API
+    var launchTime = snap.launch_date_unix
+
+    //Convert current timestamp to unix time (milliseconds)
+    var currentTimeConverted = moment().format("X")
+
+    //Calculate difference between launch and current unix time (milliseconds)
+    var timeRemaining = (launchTime - currentTimeConverted) * 1000
+
+    //Set interval to update coundown by one second
+    setInterval(function () {
+
+        //Update time remaining by decreasing one second
+        timeRemaining = moment.duration(timeRemaining - 1000)
+
+        //Convert difference to format of number of days/hours/minutes/seconds remaining
+        timeLeft = moment(timeRemaining._data).format("DD:HH:mm:ss")
+
+        //Display updated time left to launch to page
+        $(".launch-count").text(timeLeft)
+    }, 1000)
+
+    //If today is launch day update page every 5 minutes
+    ////////////////////////////////
+}
+
 
 //Create the variables for all of the pieces of the url we might want to change
-//channelId
-var channelId = "UCUuENVpVuzqpRsXWIDlpQTg"
+//Spacex
 //var channelId = "UCtI0Hodo5o5dUb67FeUjDeA"
+//Nasa
+var channelId = "UCLA_DiR1FfKNvjuUpBHmylQ"
 //part
 var part = "snippet"
 //eventType
 var eventType = "live"
 //type
 var type = "video"
+//the video id of the live stream
+var videoId
+//where the player object is stored
+var player
 
 //Ajax call to the youtube api
 $.ajax({
     url: `https://www.googleapis.com/youtube/v3/search?channelId=${channelId}&part=${part}&eventType=${eventType}&type=${type}&key=${youtubeAPI}`,
     method: "GET"
-}).then(function(snap){
+}).then(function (snap) {
     //Check if there is a livestream currently live
     if (snap.items.length > 0) {
         //If there is update the iframe
-        console.log("The stream is live!");
+        console.log("The stream is live!")
+        videoId = snap.items[0].id.videoId
+        createIframe()
     } else {
         console.log("The stream is not live.")
     }
@@ -102,9 +142,40 @@ $.ajax({
 
 //Create a function that uses the youtube iframe api
 function createIframe() {
-    var tag = $("<script>").attr("src", "https://www.youtube.com/iframe_api");
-    console.log($("script")[0])
+    var tag = $("<script>").attr("src", "https://www.youtube.com/iframe_api")
+    $("script").first().before(tag)
+
 }
 
 //Create a function that uses the youtube iframe api
 createIframe();
+function onYouTubeIframeAPIReady() {
+    player = new YT.Player('player', {
+        height: '390',
+        width: '640',
+        videoId: videoId,
+        events: {
+            'onReady': onPlayerReady,
+            'onStateChange': onPlayerStateChange
+        }
+    })
+}
+
+function onPlayerReady(event) {
+    event.target.playVideo()
+    $("#player").parent().parent().css("margin-left", "0").css("margin-right", "0")
+    $("#player").parent().css("position", "relative").css("padding-top", "25px").css("padding-bottom", "56.25%").css("height", "0")
+    $("#player").css("display", "flex").css("width", "100%").css("height", "100%").css("position", "absolute").css("top", "0").css("left", "0")
+}
+
+function onPlayerStateChange(event) {
+    logTheState(event.data)
+}
+
+function logTheState(state) {
+    for(var key in YT.PlayerState) {
+        if (YT.PlayerState[key] == state) {
+            console.log(key);
+        }
+    }
+}
