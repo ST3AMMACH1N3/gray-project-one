@@ -1,3 +1,18 @@
+//SpaceX Launch Pad Database
+var config = {
+    apiKey: "AIzaSyCM03_CdENEHXsfgsg6iikIOfJIFm_izAo",
+    authDomain: "spacex-launch-pad.firebaseapp.com",
+    databaseURL: "https://spacex-launch-pad.firebaseio.com",
+    projectId: "spacex-launch-pad",
+    storageBucket: "spacex-launch-pad.appspot.com",
+    messagingSenderId: "373874140111"
+};
+firebase.initializeApp(config);
+
+database = firebase.database()
+
+var subscribersRef = database.ref("/subscribers")
+
 //SpaceX API for Next Launch
 $.ajax({
     url: "https://api.spacexdata.com/v2/launches/next?pretty=true",
@@ -186,57 +201,70 @@ function logState(state) {
 ///////////////////////
 /// API KEY - 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
 
-$("#submit").click( function (event) {
+$("#submit").click(function (event) {
     event.preventDefault()
 
-    
     var name = $("#first-name").val().trim() + $("#last-name").val().trim()
-    var email = $("#email").val().trim()
-    var subscribers = {
-        personalizations: [
-            {
-                to: [
+    var email = $("#email").val().trim().replace(".", "%20")
+    database.ref().on("value", function (snap) {
+        console.log(snap)
+        if (snap.exists()) {
+
+            alert("Subscription exists")
+
+        } else {
+            
+            database.ref("/subscribers/" + email).push({
+                name: name,
+            })
+
+            var subscribers = {
+                personalizations: [
                     {
-                        email: email,
-                        name: name
+                        to: [
+                            {
+                                email: email,
+                                name: name
+                            }
+                        ],
+                        subject: "Thanks for subscribing!"
                     }
                 ],
-                subject: "Thanks for subscribing!"
+                from: {
+                    email: "SpaceXLaunchPadHost@gmail.com",
+                    name: "SpaceX Launch Pad"
+                },
+                content: [
+                    {
+                        type: "text/plain",
+                        value: "Thank you for becoming one of our subscribers! You will receive an email notification the day before the next SpaceX launch to check out the live stream."
+                    }
+                ]
             }
-        ],
-        from: {
-            email: "SpaceXLaunchPadHost@gmail.com",
-            name: "SpaceX Launch Pad"
-        },
-        content: [
-            {
-                type: "text/plain",
-                value: "Thank you for becoming one of our subscribers! You will receive an email notification the day before the next SpaceX launch to check out the live stream."
+
+            var settings = {
+                "async": true,
+                "crossDomain": true,
+                "url": "https://api.sendgrid.com/v3/mail/send",
+                "method": "POST",
+                "headers": {
+                    "Content-Type": "application/json",
+                    "Authorization": "Bearer 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",
+                    "Cache-Control": "no-cache",
+                    "Postman-Token": "eb764eda-032e-4596-ade7-078d9630d176"
+                },
+                "processData": false,
+                "data": JSON.stringify(subscribers)
             }
-        ]
-    }
+            $.ajax(settings).done(function (response) {
+                console.log(response);
+            })
+        }
+        console.log("test")
+        $("#first-name").val("")
+        $("#last-name").val("")
+        $("#email").val("")
 
-    var settings = {
-        "async": true,
-        "crossDomain": true,
-        "url": "https://api.sendgrid.com/v3/mail/send",
-        "method": "POST",
-        "headers": {
-            "Content-Type": "application/json",
-            "Authorization": "Bearer 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",
-            "Cache-Control": "no-cache",
-            "Postman-Token": "eb764eda-032e-4596-ade7-078d9630d176"
-        },
-        "processData": false,
-        "data": JSON.stringify(subscribers)
-    }
-
-    $("#first-name").val("")
-    $("#last-name").val("")
-    $("#email").val("")
-    $.ajax(settings).done(function (response) {
-        console.log(response);
-    });
-
+    })
 })
 
