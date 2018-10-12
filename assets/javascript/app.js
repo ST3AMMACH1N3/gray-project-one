@@ -113,3 +113,26 @@ function logTheState(state) {
         }
     }
 }
+
+///////Mailer/////////////
+///////////////////////
+/// API KEY - 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
+
+var settings = {
+    "async": true,
+    "crossDomain": true,
+    "url": "https://api.sendgrid.com/v3/mail/send",
+    "method": "POST",
+    "headers": {
+      "Content-Type": "application/json",
+      "Authorization": "Bearer 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",
+      "Cache-Control": "no-cache",
+      "Postman-Token": "0b235ec2-b7c7-4690-9761-f90362296f83"
+    },
+    "processData": false,
+    "data": "{\n\t\"personalizations\": [\n\t{\n\t\t\"to\": [\n\t\t\t{\n\t\t\t\t\"email\": \"raiotech@gmail.com\",\n\t\t\t\t\"name\": \"David Hiller\"\n\t\t\t}\n\t\t],\n\t\t\"subject\": \"Test email\"\n\t\t}\n\t],\n\t\"from\": {\n\t\t\"email\": \"raiotech@gmail.com\",\n\t\t\"name\": \"David Hiller\"\n\t},\n\t\"content\": [\n\t\t{\n\t\t\t\"type\": \"text/plain\",\n\t\t\t\"value\": \"This is a test email\"\n\t\t}\n\t]\n}"
+  }
+  
+  $.ajax(settings).done(function (response) {
+    console.log(response);
+  });
