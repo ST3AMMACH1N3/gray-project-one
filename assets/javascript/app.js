@@ -13,6 +13,10 @@ $.ajax({
     countdownClock(snap)
 })
 
+var timeRemaining
+var checkTimer
+var countDown
+
 //Countdown to next launch
 function countdownClock(snap) {
 
@@ -23,57 +27,121 @@ function countdownClock(snap) {
     var currentTimeConverted = moment().format("X")
 
     //Calculate difference between launch and current unix time (milliseconds)
-    var timeRemaining = (launchTime - currentTimeConverted) * 1000
+    timeRemaining = moment.duration((launchTime - currentTimeConverted) * 1000)
+    // timeRemaining = moment.duration(60 * 1000 * 6)
 
     //Set interval to update coundown by one second
-    setInterval(function () {
+    countDown = setInterval(function () {
 
         //Update time remaining by decreasing one second
         timeRemaining = moment.duration(timeRemaining - 1000)
+        var data = timeRemaining._data
+
+        //If there is no time left clear the interval
+        let shouldClear =  true;
+        for(var key in data) {
+            if (data[key] > 0) {
+                shouldClear = false;
+                break;
+            }
+        }
+        if (shouldClear) {
+            clearInterval(countDown)
+        }
 
         //Convert difference to format of number of days/hours/minutes/seconds remaining
-        timeLeft = moment(timeRemaining._data).format("DD:HH:mm:ss")
+        //timeLeft = moment(timeRemaining._data).format("DD:HH:mm:ss")
+        var timeArray = [data.days, data.hours, data.minutes, data.seconds]
+        var timeLeft = ""
+        for (var i = 0; i < timeArray.length; i++) {
+            timeLeft += checkConcat(timeArray[i])
+            if (i !== timeArray.length - 1) {
+                timeLeft += ":"
+            }
+        }
+
+        function checkConcat(value) {
+            if (value < 10) {
+                return `0${value}`
+            }
+            return value
+        }
 
         //Display updated time left to launch to page
         $(".launch-count").text(timeLeft)
     }, 1000)
 
-    //If today is launch day update page every 5 minutes
-    ////////////////////////////////
+    
+    //If the launch is more than a day away check back in every day
+    if (timeRemaining._data.days > 0) {
+        checkTimer = setInterval(checkDaysRemaining, 1000 * 60 * 60 * 24) //Once a day
+        console.log("Day timer is set")
+    } else {
+        //If the launch is today call checkDaysRemaining
+        checkDaysRemaining()
+    }
+}
+
+function checkDaysRemaining() {
+    var daysLeft = timeRemaining._data.days
+    console.log(`${daysLeft} days left`)
+    //If there is less than one day create an interval to check every hour
+    if (daysLeft < 1) {
+        console.log("Hour timer is set")
+        clearInterval(checkTimer)
+        checkHoursRemaining()
+        checkTimer = setInterval(checkHoursRemaining, 1000 * 60 * 60) //Once an hour
+    }
+    
+}
+
+function checkHoursRemaining() {
+    var hoursLeft = timeRemaining._data.hours
+    console.log(`${hoursLeft} hours left`)
+    //If there is less than 2 hours left set up an interval to check every 5 minutes
+    if (hoursLeft < 2) {
+        console.log("Five minute timer is set")
+        clearInterval(checkTimer);
+        checkStream()
+        checkTimer = setInterval(checkStream, 1000 * 60 * 5) //Once every 5 minutes
+    }
 }
 
 
 //Create the variables for all of the pieces of the url we might want to change
-//Spacex
-//var channelId = "UCtI0Hodo5o5dUb67FeUjDeA"
-//Nasa
-var channelId = "UCLA_DiR1FfKNvjuUpBHmylQ"
-//part
-var part = "snippet"
-//eventType
-var eventType = "live"
-//type
-var type = "video"
 //the video id of the live stream
 var videoId
 //where the player object is stored
 var player
 
-//Ajax call to the youtube api
-$.ajax({
-    url: `https://www.googleapis.com/youtube/v3/search?channelId=${channelId}&part=${part}&eventType=${eventType}&type=${type}&key=${youtubeAPI}`,
-    method: "GET"
-}).then(function (snap) {
-    //Check if there is a livestream currently live
-    if (snap.items.length > 0) {
-        //If there is update the iframe
-        console.log("The stream is live!")
-        videoId = snap.items[0].id.videoId
-        createIframe()
-    } else {
-        console.log("The stream is not live.")
-    }
-})
+function checkStream() {
+    //Spacex
+    //var channelId = "UCtI0Hodo5o5dUb67FeUjDeA"
+    //Nasa
+    var channelId = "UCLA_DiR1FfKNvjuUpBHmylQ"
+    //part
+    var part = "snippet"
+    //eventType
+    var eventType = "live"
+    //type
+    var type = "video"
+    //Ajax call to the youtube api
+    $.ajax({
+        url: `https://www.googleapis.com/youtube/v3/search?channelId=${channelId}&part=${part}&eventType=${eventType}&type=${type}&key=${youtubeAPI}`,
+        method: "GET"
+    }).then(function (snap) {
+        //Check if there is a livestream currently live
+        if (snap.items.length > 0) {
+            //If there is update the iframe
+            console.log("The stream is live!")
+            clearInterval(checkTimer);
+            videoId = snap.items[0].id.videoId
+            createIframe()
+        } else {
+            console.log("The stream is not live.")
+        }
+    })
+}
 
 
 //Create a function that uses the youtube iframe api
@@ -103,10 +171,10 @@ function onPlayerReady(event) {
 }
 
 function onPlayerStateChange(event) {
-    logTheState(event.data)
+    logState(event.data)
 }
 
-function logTheState(state) {
+function logState(state) {
     for(var key in YT.PlayerState) {
         if (YT.PlayerState[key] == state) {
             console.log(key);
