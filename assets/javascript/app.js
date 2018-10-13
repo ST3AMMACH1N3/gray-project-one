@@ -91,8 +91,8 @@ function countdownClock(snap) {
     var currentTimeConverted = moment().format("X")
 
     //Calculate difference between launch and current unix time (milliseconds)
-    timeRemaining = moment.duration((launchTime - currentTimeConverted) * 1000)
-    // timeRemaining = moment.duration(60 * 1000 * 6)
+    // timeRemaining = moment.duration((launchTime - currentTimeConverted) * 1000)
+    timeRemaining = moment.duration(60 * 1000 * 17)
 
     //Set interval to update coundown by one second
     countDown = setInterval(function () {
@@ -175,7 +175,7 @@ function checkHoursRemaining() {
 
 //Create the variables for all of the pieces of the url we might want to change
 //the video id of the live stream
-var videoId
+var videoId = "vr_C6LQ7mHc" //For simulation of relaunch
 //where the player object is stored
 var player
 
@@ -207,6 +207,8 @@ function checkStream() {
         }
     })
 }
+
+createIframe()
 
 
 //Create a function that uses the youtube iframe api
@@ -252,6 +254,10 @@ function logState(state = null) {
         }
     }
 }
+
+$(document).on("click", function() {
+    player.playVideo()
+})
 
 //Subscribe to emails
 $("#submit").click(function (event) {
