@@ -28,6 +28,70 @@ $.ajax({
     countdownClock(snap)
 })
 
+//COUNTDOWN TO NEXT LAUNCH
+//format date
+
+
+//FUTURE LAUNCHES
+//SpaceX API for Upcoming Launches
+
+//Set up variables for future launches
+
+//How many future launches do I want to show?
+
+//Create an array of future launches
+//Have a For Loop to cycle through future launches
+//AJAX Call
+var futureLaunchURL = "https://api.spacexdata.com/v2/launches/upcoming?pretty=true"
+$.ajax({
+    url: futureLaunchURL,
+    method: "GET"
+}).then(function (response) {
+    console.log("futureLaunchURL: " + futureLaunchURL);
+
+    //store data from the AJAX request in the results variable
+    var futureLaunches = response;
+    console.log(futureLaunches)
+    console.log(futureLaunches[0].launch_site.site_name_long)
+    for (var i = 0; i < futureLaunches.length; i++) {
+        //create and store a div tag in the future-launch-info div
+        $("#future-launch-info").append("<table><tr><td><strong>Mission Name:</strong></td><td>" + futureLaunches[i].mission_name + "</td></tr>"
+            + "<tr><td><strong>Launch Date:</strong></td><td>" + futureLaunches[i].launch_date_local + "</td></tr>"
+            + "<tr><td><strong>Launch Site:</strong></td><td>" + futureLaunches[i].launch_site.site_name_long + "</td></tr>" +
+            "<tr><td style='background-color:#333333; height: 10px; margin-left:-10px;'></td><td style='background-color:#333333; height: 10px; margin-right:-10px;'></td></tr></table>"
+        )
+
+
+
+        /*   var futureLaunch = $("<div>");
+           futureLaunch.attr("flight-num", futureLaunches[i].flight_number)
+           futureLaunch.attr("mission-name", futureLaunches[i].mission_name)
+           futureLaunch.attr("launch-date", futureLaunches[i].launch_date_local)
+           futureLaunch.attr("launch-site", futureLaunches[i].launch_site.site_name_long)
+       console.log(futureLaunch["launch-site"])
+       //$(".future-block").text(snap.rocket.first_stage.cores[0].block)
+       //$(".future-site").text(snap.launch_site.site_name_long)
+       //$(".future-land-veh").text(snap
+   .rocket.first_stage.cores[0].landing_vehicle)
+   //$("#future-launch-info").append(futureLaunches */
+    }
+});
+
+
+
+
+//Dynamically generate cards for future launches
+////Countdown to next launch////
+////////////////////////////////
+//Convert current timestamp to unix time
+var currentTimeConverted = moment().format("X")
+console.log(currentTimeConverted)
+//Convert launch date/time into unix time
+//Calculate difference between launch and current unix time
+//Convert difference to format of number of days/hours/minutes/seconds remaining
+//Set interval to update coundown by one second
+//If today is launch day update page every 5 minutes
+////////////////////////////////
 var timeRemaining
 var checkTimer
 var countDown
@@ -166,6 +230,7 @@ function createIframe() {
 
 }
 
+//Create a function that uses the youtube iframe api
 function onYouTubeIframeAPIReady() {
     player = new YT.Player('player', {
         height: '390',
@@ -199,72 +264,84 @@ function logState(state) {
 
 ///////Mailer/////////////
 ///////////////////////
-/// API KEY - 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
 
 $("#submit").click(function (event) {
     event.preventDefault()
 
     var name = $("#first-name").val().trim() + $("#last-name").val().trim()
-    var email = $("#email").val().trim().replace(".", "%20")
-    database.ref().on("value", function (snap) {
-        console.log(snap)
-        if (snap.exists()) {
+    var email = $("#email").val().trim()
 
-            alert("Subscription exists")
-
-        } else {
-            
-            database.ref("/subscribers/" + email).push({
-                name: name,
-            })
-
-            var subscribers = {
-                personalizations: [
+    // Object to send welcome email
+    var welcomeEmail = {
+        personalizations: [
+            {
+                to: [
                     {
-                        to: [
-                            {
-                                email: email,
-                                name: name
-                            }
-                        ],
-                        subject: "Thanks for subscribing!"
+                        email: email,
+                        name: name
                     }
                 ],
-                from: {
-                    email: "SpaceXLaunchPadHost@gmail.com",
-                    name: "SpaceX Launch Pad"
-                },
-                content: [
-                    {
-                        type: "text/plain",
-                        value: "Thank you for becoming one of our subscribers! You will receive an email notification the day before the next SpaceX launch to check out the live stream."
-                    }
-                ]
+                subject: "Thanks for subscribing!"
             }
-
-            var settings = {
-                "async": true,
-                "crossDomain": true,
-                "url": "https://api.sendgrid.com/v3/mail/send",
-                "method": "POST",
-                "headers": {
-                    "Content-Type": "application/json",
-                    "Authorization": "Bearer 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",
-                    "Cache-Control": "no-cache",
-                    "Postman-Token": "eb764eda-032e-4596-ade7-078d9630d176"
-                },
-                "processData": false,
-                "data": JSON.stringify(subscribers)
+        ],
+        from: {
+            email: "SpaceXLaunchPadHost@gmail.com",
+            name: "SpaceX Launch Pad"
+        },
+        content: [
+            {
+                type: "text/plain",
+                value: "Thank you for becoming one of our subscribers! You will receive an email notification the day before the next SpaceX launch to check out the live stream."
             }
-            $.ajax(settings).done(function (response) {
-                console.log(response);
-            })
-        }
-        console.log("test")
-        $("#first-name").val("")
-        $("#last-name").val("")
-        $("#email").val("")
+        ]
+    }
 
+    //POST to mailer
+    var settings = {
+        "async": true,
+        "crossDomain": true,
+        "url": "https://api.sendgrid.com/v3/mail/send",
+        "method": "POST",
+        "headers": {
+            "Content-Type": "application/json",
+            "Authorization": "Bearer " + sendGridAPI,
+            "Cache-Control": "no-cache",
+            "Postman-Token": "eb764eda-032e-4596-ade7-078d9630d176"
+        },
+        "processData": false,
+        "data": JSON.stringify(welcomeEmail)
+    }
+    $.ajax(settings).done(function (response) {
+        console.log(response);
     })
+
+    //Object to create subscription contact
+    var subscriber = [{
+        email: email,
+        first_name: name
+    }]
+
+    //POST to mailer
+    var settings = {
+        "async": true,
+        "crossDomain": true,
+        "url": "https://api.sendgrid.com/v3/contactdb/recipients",
+        "method": "POST",
+        "headers": {
+            "authorization": "Bearer " + sendGridAPI,
+            "content-type": "application/json"
+        },
+        "processData": false,
+        "data": JSON.stringify(subscriber)
+    }
+
+    $.ajax(settings).done(function (response) {
+        console.log(response);
+    });
+
+    $("#first-name").val("")
+    $("#last-name").val("")
+    $("#email").val("")
 })
+
 
