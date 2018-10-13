@@ -89,8 +89,8 @@ function countdownClock(snap) {
     var currentTimeConverted = moment().format("X")
 
     //Calculate difference between launch and current unix time (milliseconds)
-    timeRemaining = moment.duration((launchTime - currentTimeConverted) * 1000)
-    // timeRemaining = moment.duration(60 * 1000 * 6)
+    // timeRemaining = moment.duration((launchTime - currentTimeConverted) * 1000)
+    timeRemaining = moment.duration(60 * 1000 * 6)
 
     //Set interval to update coundown by one second
     countDown = setInterval(function () {
