@@ -1,18 +1,3 @@
-//SpaceX Launch Pad Database
-var config = {
-    apiKey: "AIzaSyCM03_CdENEHXsfgsg6iikIOfJIFm_izAo",
-    authDomain: "spacex-launch-pad.firebaseapp.com",
-    databaseURL: "https://spacex-launch-pad.firebaseio.com",
-    projectId: "spacex-launch-pad",
-    storageBucket: "spacex-launch-pad.appspot.com",
-    messagingSenderId: "373874140111"
-};
-firebase.initializeApp(config);
-
-database = firebase.database()
-
-var subscribersRef = database.ref("/subscribers")
-
 //SpaceX API for Next Launch
 $.ajax({
     url: "https://api.spacexdata.com/v2/launches/next?pretty=true",
@@ -20,20 +5,21 @@ $.ajax({
 }).then(function (snap) {
     $("#next-flight-num").text(snap.flight_number)
     $("#next-mission-name").text(snap.mission_name)
-// Set up format for launch date
-var nextLaunchDate = snap.launch_date_local;
-var convDate = moment(nextLaunchDate).format("MMM DD, YYYY, HH:mm");
-console.log("When is the Launch Date: " + convDate)
+    // Set up format for launch date
+    var nextLaunchDate = snap.launch_date_local;
+    var convDate = moment(nextLaunchDate).format("MMM DD, YYYY, HH:mm");
+    console.log("When is the Launch Date: " + convDate)
     $("#next-date").text(convDate)
     //$("#next-date").text(snap.launch_date_local)
     $("#next-rocket-name").text(snap.rocket.rocket_name)
     $("#next-block").text(snap.rocket.first_stage.cores[0].block)
     $("#next-site").text(snap.launch_site.site_name_long)
     $("#next-land-veh").text(snap.rocket.first_stage.cores[0].landing_vehicle)
-        if (snap.rocket.first_stage.cores[0].landing_vehicle === null) {
-            $("#next-land-veh").text("null")
-        }
+    if (snap.rocket.first_stage.cores[0].landing_vehicle === null) {
+        $("#next-land-veh").text("null")
+    }
     countdownClock(snap)
+    setReminderMailer()
 })
 
 //COUNTDOWN TO NEXT LAUNCH
@@ -58,27 +44,27 @@ $.ajax({
     console.log("futureLaunchURL: " + futureLaunchURL);
 
     //store data from the AJAX request in the results variable
-    
+
     var futureLaunches = response;
     console.log(futureLaunches)
     console.log(futureLaunches[0].launch_site.site_name_long)
     var fLaunchDate = futureLaunches[0].launch_date_local;
-        console.log("fLaunchDate: " + fLaunchDate);
-       
-console.log("convDate: " + convDate);
-console.log("date: " + moment(futureLaunches[0].launch_date_local).format("MMM DD, YYYY"))
-        
-        for (var i = 1; i < futureLaunches.length; i++) {
+    console.log("fLaunchDate: " + fLaunchDate);
+
+    console.log("convDate: " + convDate);
+    console.log("date: " + moment(futureLaunches[0].launch_date_local).format("MMM DD, YYYY"))
+
+    for (var i = 1; i < futureLaunches.length; i++) {
         //create and store a div tag in the future-launch-info div
         var fLaunchDate = futureLaunches[i].launch_date_local;
         var convDate = moment(fLaunchDate).format("MMM DD, YYYY");
         $("#future-launch-info").append("<div class='card' ><div class='card-body' ><table><tr style='border-bottom: solid 1px #999;'><td class='align-top'; style='width:33%; min-width='100px;'><strong>Mission&nbsp;Name:</strong></td><td>" + futureLaunches[i].mission_name + "</td></tr>"
-              + "<tr style='border-bottom: solid 1px #999;'><td><strong>Launch Date:</strong></td><td>" + convDate + "</td></tr>"
-        + "<tr><td class='align-top'><strong>Launch Site:</strong></td><td style='line-height:18px'>" + futureLaunches[i].launch_site.site_name_long + "</td></tr></table></div></div>" +
-        "<tr><td style='background-color:#333333; height: 10px; margin-left:-10px;'></td><td style='background-color:#333333; height: 10px; margin-right:-10px;'></td></tr></table>"
+            + "<tr style='border-bottom: solid 1px #999;'><td><strong>Launch Date:</strong></td><td>" + convDate + "</td></tr>"
+            + "<tr><td class='align-top'><strong>Launch Site:</strong></td><td style='line-height:18px'>" + futureLaunches[i].launch_site.site_name_long + "</td></tr></table></div></div>" +
+            "<tr><td style='background-color:#333333; height: 10px; margin-left:-10px;'></td><td style='background-color:#333333; height: 10px; margin-right:-10px;'></td></tr></table>"
         )
-   }
-  });
+    }
+});
 ////Countdown to next launch////
 ////////////////////////////////
 //Convert current timestamp to unix time
@@ -93,12 +79,13 @@ console.log(currentTimeConverted)
 var timeRemaining
 var checkTimer
 var countDown
+var launchTime
 
 //Countdown to next launch
 function countdownClock(snap) {
 
     //Get launch time from API
-    var launchTime = snap.launch_date_unix
+    launchTime = snap.launch_date_unix
 
     //Convert current timestamp to unix time (milliseconds)
     var currentTimeConverted = moment().format("X")
@@ -182,6 +169,7 @@ function checkHoursRemaining() {
         checkStream()
         checkTimer = setInterval(checkStream, 1000 * 60 * 5) //Once every 5 minutes
     }
+
 }
 
 
@@ -260,15 +248,50 @@ function logState(state) {
     }
 }
 
-///////Mailer/////////////
-///////////////////////
-
+//Subscribe to emails
 $("#submit").click(function (event) {
     event.preventDefault()
 
+    //Take input from user to set name and email
     var name = $("#first-name").val().trim() + $("#last-name").val().trim()
     var email = $("#email").val().trim()
 
+    //Send welcome email to new subscriber
+    sendWelcome(name, email)
+
+    //Create contact recipient for mailer campaigns
+    addSubscriber(name, email)
+
+    //Clear inputs
+    $("#first-name").val("")
+    $("#last-name").val("")
+    $("#email").val("")
+})
+
+function setReminderMailer() {
+    var sendAt = {
+        send_at: launchTime - 86400
+    }
+    //API update schedule for livestream reminder mailer campaign
+    var settings = {
+        "async": true,
+        "crossDomain": true,
+        "url": "https://api.sendgrid.com/v3/campaigns/4012533/schedules",
+        "method": "POST",
+        "headers": {
+            "authorization": "Bearer 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",
+            "content-type": "application/json"
+        },
+        "processData": false,
+        "data": JSON.stringify(sendAt)
+    }
+
+    $.ajax(settings).done(function (response) {
+        console.log(response);
+    });
+}
+
+function sendWelcome(name, email) {
     // Object to send welcome email
     var welcomeEmail = {
         personalizations: [
@@ -298,7 +321,7 @@ $("#submit").click(function (event) {
     var settings = {
         "async": true,
         "crossDomain": true,
-        "url": "https://api.sendgrid.com/v3/mail/send",
+        "url": "https://api.sendgrid.com/v3/campaigns/4013744/schedules/now",
         "method": "POST",
         "headers": {
             "Content-Type": "application/json",
@@ -312,7 +335,9 @@ $("#submit").click(function (event) {
     $.ajax(settings).done(function (response) {
         console.log(response);
     })
+}
 
+function addSubscriber(name, email) {
     //Object to create subscription contact
     var subscriber = [{
         email: email,
@@ -336,10 +361,4 @@ $("#submit").click(function (event) {
     $.ajax(settings).done(function (response) {
         console.log(response);
     });
-
-    $("#first-name").val("")
-    $("#last-name").val("")
-    $("#email").val("")
-})
-
-
+}
