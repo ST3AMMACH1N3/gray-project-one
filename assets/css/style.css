@@ -36,7 +36,9 @@ h1, h2, .card-title {
     font-family: 'Audiowide', cursive;
     text-align: center;
 }
-
+.card {
+    border-radius: 5px;
+}
 .card-title {
     font-size: 18pt;
     
@@ -51,6 +53,14 @@ p {
 }
 hr {
     height:10px; color:#333333; margin: 10px -5px;
+}
+
+tr {
+    border-bottom: solid 1px #999;
+}
+.leftCol {
+    width:33%;
+    max-width: width 100px;
 }
 
 .gray {
@@ -76,4 +86,5 @@ hr {
     background: #eeeeee;
     font-family: 'Space Mono', monospace;
     color: #222222;
+    border-radius: 5px;
 }
