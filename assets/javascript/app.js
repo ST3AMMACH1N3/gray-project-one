@@ -1,3 +1,18 @@
+//SpaceX Launch Pad Database
+var config = {
+    apiKey: "AIzaSyCM03_CdENEHXsfgsg6iikIOfJIFm_izAo",
+    authDomain: "spacex-launch-pad.firebaseapp.com",
+    databaseURL: "https://spacex-launch-pad.firebaseio.com",
+    projectId: "spacex-launch-pad",
+    storageBucket: "spacex-launch-pad.appspot.com",
+    messagingSenderId: "373874140111"
+};
+firebase.initializeApp(config);
+
+database = firebase.database()
+
+var subscribersRef = database.ref("/subscribers")
+
 //SpaceX API for Next Launch
 $.ajax({
     url: "https://api.spacexdata.com/v2/launches/next?pretty=true",
@@ -39,9 +54,9 @@ var futureLaunchURL = "https://api.spacexdata.com/v2/launches/upcoming?pretty=tr
 $.ajax({
     url: futureLaunchURL,
     method: "GET"
-}).then(function(response){ 
+}).then(function (response) {
     console.log("futureLaunchURL: " + futureLaunchURL);
-    
+
     //store data from the AJAX request in the results variable
     
     var futureLaunches = response;
@@ -100,8 +115,8 @@ function countdownClock(snap) {
         var data = timeRemaining._data
 
         //If there is no time left clear the interval
-        let shouldClear =  true;
-        for(var key in data) {
+        let shouldClear = true;
+        for (var key in data) {
             if (data[key] > 0) {
                 shouldClear = false;
                 break;
@@ -133,7 +148,7 @@ function countdownClock(snap) {
         $(".launch-count").text(timeLeft)
     }, 1000)
 
-    
+
     //If the launch is more than a day away check back in every day
     if (timeRemaining._data.days > 0) {
         checkTimer = setInterval(checkDaysRemaining, 1000 * 60 * 60 * 24) //Once a day
@@ -154,7 +169,7 @@ function checkDaysRemaining() {
         checkHoursRemaining()
         checkTimer = setInterval(checkHoursRemaining, 1000 * 60 * 60) //Once an hour
     }
-    
+
 }
 
 function checkHoursRemaining() {
@@ -238,9 +253,93 @@ function onPlayerStateChange(event) {
 }
 
 function logState(state) {
-    for(var key in YT.PlayerState) {
+    for (var key in YT.PlayerState) {
         if (YT.PlayerState[key] == state) {
             console.log(key);
         }
     }
 }
+
+///////Mailer/////////////
+///////////////////////
+
+$("#submit").click(function (event) {
+    event.preventDefault()
+
+    var name = $("#first-name").val().trim() + $("#last-name").val().trim()
+    var email = $("#email").val().trim()
+
+    // Object to send welcome email
+    var welcomeEmail = {
+        personalizations: [
+            {
+                to: [
+                    {
+                        email: email,
+                        name: name
+                    }
+                ],
+                subject: "Thanks for subscribing!"
+            }
+        ],
+        from: {
+            email: "SpaceXLaunchPadHost@gmail.com",
+            name: "SpaceX Launch Pad"
+        },
+        content: [
+            {
+                type: "text/plain",
+                value: "Thank you for becoming one of our subscribers! You will receive an email notification the day before the next SpaceX launch to check out the live stream."
+            }
+        ]
+    }
+
+    //POST to mailer
+    var settings = {
+        "async": true,
+        "crossDomain": true,
+        "url": "https://api.sendgrid.com/v3/mail/send",
+        "method": "POST",
+        "headers": {
+            "Content-Type": "application/json",
+            "Authorization": "Bearer " + sendGridAPI,
+            "Cache-Control": "no-cache",
+            "Postman-Token": "eb764eda-032e-4596-ade7-078d9630d176"
+        },
+        "processData": false,
+        "data": JSON.stringify(welcomeEmail)
+    }
+    $.ajax(settings).done(function (response) {
+        console.log(response);
+    })
+
+    //Object to create subscription contact
+    var subscriber = [{
+        email: email,
+        first_name: name
+    }]
+
+    //POST to mailer
+    var settings = {
+        "async": true,
+        "crossDomain": true,
+        "url": "https://api.sendgrid.com/v3/contactdb/recipients",
+        "method": "POST",
+        "headers": {
+            "authorization": "Bearer " + sendGridAPI,
+            "content-type": "application/json"
+        },
+        "processData": false,
+        "data": JSON.stringify(subscriber)
+    }
+
+    $.ajax(settings).done(function (response) {
+        console.log(response);
+    });
+
+    $("#first-name").val("")
+    $("#last-name").val("")
+    $("#email").val("")
+})
+
+
