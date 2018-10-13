@@ -15,9 +15,9 @@ $.ajax({
     $("#next-block").text(snap.rocket.first_stage.cores[0].block)
     $("#next-site").text(snap.launch_site.site_name_long)
     $("#next-land-veh").text(snap.rocket.first_stage.cores[0].landing_vehicle)
-    if (snap.rocket.first_stage.cores[0].landing_vehicle === null) {
-        $("#next-land-veh").text("null")
-    }
+        if (snap.rocket.first_stage.cores[0].landing_vehicle === null) {
+            $("#next-land-veh").text("N/A")
+        }
     countdownClock(snap)
     setReminderMailer()
 })
@@ -238,11 +238,16 @@ function onPlayerReady(event) {
 
 function onPlayerStateChange(event) {
     logState(event.data)
+    if (YT.PlayerState.ENDED == event.data) {
+        $("iframe").parent().css("padding", "0")
+        $("iframe").parent().append("<div id='player' class='launch-vid'><div>")
+        $("iframe").remove()
+    }
 }
 
-function logState(state) {
+function logState(state = null) {
     for (var key in YT.PlayerState) {
-        if (YT.PlayerState[key] == state) {
+        if (YT.PlayerState[key] == state || state == null) {
             console.log(key);
         }
     }
