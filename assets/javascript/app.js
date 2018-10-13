@@ -15,6 +15,9 @@ console.log("When is the Launch Date: " + convDate)
     $("#next-block").text(snap.rocket.first_stage.cores[0].block)
     $("#next-site").text(snap.launch_site.site_name_long)
     $("#next-land-veh").text(snap.rocket.first_stage.cores[0].landing_vehicle)
+        if (snap.rocket.first_stage.cores[0].landing_vehicle === null) {
+            $("#next-land-veh").text("null")
+        }
     countdownClock(snap)
 })
 
