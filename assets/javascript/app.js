@@ -284,7 +284,7 @@ function setReminderMailer() {
         "url": "https://api.sendgrid.com/v3/campaigns/4012533/schedules",
         "method": "POST",
         "headers": {
-            "authorization": "Bearer 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",
+            "authorization": "Bearer " + sendGridAPI,
             "content-type": "application/json"
         },
         "processData": false,
