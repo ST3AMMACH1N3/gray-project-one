@@ -132,7 +132,9 @@ function countdownClock(snap) {
 
         //Convert difference to format of number of days/hours/minutes/seconds remaining
         //timeLeft = moment(timeRemaining._data).format("DD:HH:mm:ss")
-        var timeArray = [data.days, data.hours, data.minutes, data.seconds]
+         // Making sure that if there is more than a month until the next launch it includes ALL days, not just days more than a month
+        var days = Math.floor(moment.duration(timeRemaining).as('days'))
+        var timeArray = [days, data.hours, data.minutes, data.seconds]
         var timeLeft = ""
         for (var i = 0; i < timeArray.length; i++) {
             timeLeft += checkConcat(timeArray[i])
