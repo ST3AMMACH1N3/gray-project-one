@@ -1,3 +1,20 @@
+// Initialize Firebase
+var config = {
+    apiKey: "AIzaSyCM03_CdENEHXsfgsg6iikIOfJIFm_izAo",
+    authDomain: "spacex-launch-pad.firebaseapp.com",
+    databaseURL: "https://spacex-launch-pad.firebaseio.com",
+    projectId: "spacex-launch-pad",
+    storageBucket: "spacex-launch-pad.appspot.com",
+    messagingSenderId: "373874140111"
+  };
+  firebase.initializeApp(config);
+
+  database = firebase.database()
+
+  database.ref().on("value", function(snap){
+      console.log(snap)
+  })
+
 //SpaceX API for Next Launch
 $.ajax({
     url: "https://api.spacexdata.com/v2/launches/next?pretty=true",
@@ -181,9 +198,9 @@ var player
 
 function checkStream() {
     //Spacex
-    //var channelId = "UCtI0Hodo5o5dUb67FeUjDeA"
+    var channelId = "UCtI0Hodo5o5dUb67FeUjDeA"
     //Nasa
-    var channelId = "UCLA_DiR1FfKNvjuUpBHmylQ"
+    // var channelId = "UCLA_DiR1FfKNvjuUpBHmylQ"
     //part
     var part = "snippet"
     //eventType
@@ -327,12 +344,12 @@ function sendWelcome(name, email) {
             }
         ]
     }
-
+    
     //POST to mailer
     var settings = {
         "async": true,
         "crossDomain": true,
-        "url": "https://api.sendgrid.com/v3/campaigns/4013744/schedules/now",
+        "url": "https://api.sendgrid.com/v3/mail/send",
         "method": "POST",
         "headers": {
             "Content-Type": "application/json",
